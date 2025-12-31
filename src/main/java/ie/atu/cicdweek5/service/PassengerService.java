@@ -1,4 +1,5 @@
 package ie.atu.cicdweek5.service;
+import ie.atu.cicdweek5.errorHandling.DuplicateException;
 import org.springframework.stereotype.Service;
 
 import ie.atu.cicdweek5.model.Passenger;
@@ -26,8 +27,10 @@ public class PassengerService {
     }
 
     public Passenger create(Passenger p){
-        if (findById(p.getPassengerId()).isPresent()) {
-            throw new IllegalStateException("PassengerId already exists");
+        for (Passenger pass : store) {
+            if (findById(p.getPassengerId()).isPresent()) {
+                throw new DuplicateException("PassengerId with Id " + p.getPassengerId() + " already exists");
+            }
         }
         store.add(p);
         return p;
